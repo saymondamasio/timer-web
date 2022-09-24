@@ -1,0 +1,8 @@
+{
+  "extends": "@saymondamasio/eslint-config/typescript-react",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  }
+}
