@@ -16,7 +16,7 @@ export const HomeContainer = styled.main`
 	}
 `
 
-export const FormContainer = styled.div`
+export const FormContainer = styled.form`
 	width: 100%;
 	display: flex;
 	align-items: center;
@@ -76,7 +76,7 @@ export const StartCountdownButton = styled.button`
 		cursor: not-allowed;
 	}
 
-	:not(&:disabled) {
+	&:not(:disabled):hover {
 		background-color: ${({ theme }) => theme['green-700']};
 	}
 `
