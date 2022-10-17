@@ -33,6 +33,7 @@ interface Cycle {
 	minutesAmount: number
 	startDate: Date
 	interruptedDate?: Date
+	finishedDate?: Date
 }
 
 export function Home(): JSX.Element {
@@ -64,15 +65,36 @@ export function Home(): JSX.Element {
 
 	useEffect(() => {
 		if (activeCycle) {
-			const interval = setInterval(() => {
-				setAmountSecondsPassed(differenceInSeconds(new Date(), activeCycle.startDate))
+			const intervalID = setInterval(() => {
+				const secondsDifference = differenceInSeconds(new Date(), activeCycle.startDate)
+
+				if (secondsDifference >= totalSeconds) {
+					setCycles(state =>
+						state.map(cycle => {
+							if (cycle.id === activeCycleId) {
+								return {
+									...cycle,
+									finishedDate: new Date()
+								}
+							}
+
+							return cycle
+						})
+					)
+
+					setAmountSecondsPassed(totalSeconds)
+
+					clearInterval(intervalID)
+				} else {
+					setAmountSecondsPassed(secondsDifference)
+				}
 			}, 1000)
 
 			return () => {
-				clearInterval(interval)
+				clearInterval(intervalID)
 			}
 		}
-	}, [activeCycle])
+	}, [activeCycle, activeCycleId, cycles, totalSeconds])
 
 	useEffect(() => {
 		if (activeCycle) document.title = `${minutes}:${seconds}`
@@ -94,13 +116,13 @@ export function Home(): JSX.Element {
 		reset()
 	}
 
-	function handleInterruptCycle() {
+	function handleInterruptCycle(): void {
 		setCycles(
 			cycles.map(cycle => {
 				if (cycle.id === activeCycleId) {
 					return {
 						...cycle,
-						interruptedDate: new Date()
+						finishedDate: new Date()
 					}
 				}
 
